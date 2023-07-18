@@ -1,68 +1,52 @@
 // create web server
-// run node comments.js
-// go to http://localhost:3000/comments.html
+// start web server
+// handle web requests
+// respond to web requests
+// stop web server
+// test web server
+// test web server with curl
+// test web server with browser
+// test web server with postman
 
-var http = require('http');
-var fs = require('fs');
-var url = require('url');
+// import express
+const express = require('express');
+const cors = require('cors');
+const bodyParser = require('body-parser');
 
-var COMMENTS_FILE = 'comments.json';
+// create web server
+const app = express();
 
-// create server
-http.createServer(function(req, res) {
-    // get url
-    var url_parts = url.parse(req.url);
-    console.log(url_parts);
+// enable CORS
+app.use(cors());
 
-    // get file name
-    var path = url_parts.pathname;
-    console.log(path);
+// handle web requests
+app.use(bodyParser.json());
 
-    // get file extention
-    var ext = path.split('.').pop();
-    console.log(ext);
+// respond to web requests
+app.get('/comments', (req, res) => {
+    res.send(comments);
+});
 
-    // get query string
-    var query = url_parts.query;
-    console.log(query);
+app.post('/comments', (req, res) => {
+    const comment = req.body;
+    comments.push(comment);
+    res.send('Your comment is successfully added.');
+});
 
-    // get file name
-    var filename = path.substring(1);
-    console.log(filename);
+// start web server
+app.listen(3000, () => {
+    console.log('Server is running on port 3000.');
+});
 
-    // default page
-    if (path == '/') {
-        filename = 'index.html';
-    }
+// stop web server: ctrl + c
 
-    // get file type
-    var type = 'text/html';
-    switch (ext) {
-        case 'css':
-            type = 'text/css';
-            break;
-        case 'js':
-            type = 'text/javascript';
-            break;
-        default:
-            type = 'text/html';
-            break;
-    }
+// test web server with curl
+// curl http://localhost:3000/comments
+// curl http://localhost:3000/comments -X POST -H "Content-Type: application/json" -d '{"text":"This is a test comment."}'
 
-    // read file
-    fs.readFile(filename, function(err, data) {
-        if (err) {
-            // error
-            console.log(err);
-            res.writeHead(404, { 'Content-Type': 'text/plain' });
-            res.write('404 Not Found\n');
-        } else {
-            // success
-            res.writeHead(200, { 'Content-Type': type });
-            res.write(data);
-        }
-        res.end();
-    });
-}).listen(3000);
+// test web server with browser
+// http://localhost:3000/comments
 
-console.log('Server running at http://localhost:3000/');
+// test web server with postman
+// http://localhost:3000/comments
+// http://localhost:3000/comments -X POST -H "Content-Type: application/json" -d '{"text":"This is a test comment."}'
